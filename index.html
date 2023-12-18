@@ -1,56 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image Generator App</title>
+  <title>Food Recipes</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
-    body{
+    body {
       padding: 20px;
+      background-image: url("/bg3.jpg");
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-blend-mode: lighten;
+
+
     }
+
     .spinner {
       border-top-color: #3498db;
       animation: spinner 1.5s linear infinite;
     }
-    
+
     #generateButton:disabled {
       background-color: #cccccc;
       cursor: not-allowed;
     }
 
     #imagePreview {
-      width: 350px; 
-      height: 350px; 
+      width: 350px;
+      height: 350px;
       object-fit: cover;
-      border-radius: 50%; /* 원형으로 보이도록 라운드 처리 */
-      padding:10px;
-      background-color:lightgrey;
-      margin:40px auto;
+      border-radius: 50%;
+      /* 원형으로 보이도록 라운드 처리 */
+      padding: 10px;
+      background: radial-gradient(black, lightgrey, white);
+      background-color: lightgrey;
+      margin: 40px auto;
 
     }
+
+    footer {
+      position: fixed;
+      bottom: 1px;
+      width: 100%;
+      height: 30px;
+      text-align: center;
+      font-size: 0.9em;
+    }
+
     @keyframes spinner {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
     }
   </style>
 </head>
+
 <body class="flex items-center justify-center h-screen bg-gray-100">
   <div class="text-center">
-    <h1 class="text-4xl font-bold mb-4">🍽️모두의 래시피</h1>
+    <h1 class="text-5xl font-bold mb-4">🍽️Food Recipes</h1>
 
 
+    <label for="imageInput" class="block mb-2 text-xl text-gray-900 dark:text-gray-400">🥘Upload a photo of your
+      food.</label>
     <div style="text-align: center;padding-left: 80px;">
-      <input type="file" id="imageInput" accept="image/*" width="100px" class="block text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer focus:outline-none" onchange="handleFileSelect(event)">
+      <input type="file" id="imageInput" accept="image/*" width="100px"
+        class="block text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer focus:outline-none"
+        onchange="handleFileSelect(event)">
     </div>
-    <label for="imageInput" class="block mb-2 font-medium text-gray-900 dark:text-gray-400">🥘Upload a photo of your food.</label>
-    
-    <img id="imagePreview" src="https://res.cloudinary.com/djzf2mipa/image/upload/v1702770403/img/irene-kredenets-6unxGRCPg0U-unsplash-removebg-preview_mubgwe.png" alt="Image preview" class=" mt-3 mx-auto" style="width: 300px; height: 300px; object-fit: cover;" />
+
+    <img id="imagePreview"
+      src="https://res.cloudinary.com/djzf2mipa/image/upload/v1702770403/img/irene-kredenets-6unxGRCPg0U-unsplash-removebg-preview_mubgwe.png"
+      alt="Image preview" class=" mt-3 mx-auto" style="width: 400px; height: 400px; object-fit: cover;" />
 
 
-    <button id="generateButton" onclick="generateContent()" class="mt-3 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700" disabled>Go Recipes</button>
+    <button id="generateButton" onclick="generateContent()"
+      class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700" disabled>View Recipes</button>
+    <button id="generateButton" onclick="generateContent()"
+      class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700" disabled>레시피보기</button>
 
     <div id="response" class="mt-5" style="width: 400px;"></div>
     <div id="loading" class="hidden mt-3 flex justify-center items-center">
@@ -58,6 +93,10 @@
       <p>분석중...</p>
     </div>
   </div>
+  <footer>
+    COPYRIGHT© 2023 <a href="http://aiclass.kr" style="font-weight: 900;">🦾RunBuilder</a> ALL RIGHTS
+    RESERVED.
+  </footer>
 
   <script>
     function handleFileSelect(event) {
@@ -70,7 +109,7 @@
 
     function previewImage(event) {
       var reader = new FileReader();
-      reader.onload = function() {
+      reader.onload = function () {
         var output = document.getElementById('imagePreview');
         output.src = reader.result;
         output.classList.remove('hidden');
@@ -79,74 +118,75 @@
     }
 
     function generateContent() {
-  document.getElementById('response').innerHTML = '';
-  const imageInput = document.getElementById('imageInput');
+      document.getElementById('response').innerHTML = '';
+      const imageInput = document.getElementById('imageInput');
 
-  if (imageInput.files.length === 0) {
-    Swal.fire({
-      title: '경고',
-      text: '사진을 먼저 선택해주세요.',
-      icon: 'warning',
-      confirmButtonText: '확인'
-    });
-    return;
-  }
-
-  document.getElementById('loading').classList.remove('hidden');
-  document.getElementById('generateButton').classList.add('hidden');
-
-  const formData = new FormData();
-  formData.append('image', imageInput.files[0]);
-
-  const jcookUrl = 'https://port-0-jcook-9zxht12blq81t0ot.sel4.cloudtype.app/generate'
-  fetch(jcookUrl, {
-    method: 'POST',
-    body: formData
-  })
-  .then(response => response.json())
-  .then(data => {
-    const titleMatch = data.generatedText.match(/\*\*(.*?)\*\*/);
-    const title = titleMatch ? titleMatch[1] : '분석 결과';
-    
-    // '**제목**' 제거 및 마침표 기준으로 줄바꿈 추가
-    let content = data.generatedText.replace(/\*\*.*?\*\*/g, '').trim();
-    
-    // 숫자 다음의 마침표를 제외하고, 마침표 뒤에 줄바꿈 추가
-    content = content.split('.').map((sentence, index, array) => {
-      if (index < array.length - 1 && !sentence.match(/\d$/)) {
-        return sentence + '.<br>';
+      if (imageInput.files.length === 0) {
+        Swal.fire({
+          title: '경고',
+          text: '사진을 먼저 선택해주세요.',
+          icon: 'warning',
+          confirmButtonText: '확인'
+        });
+        return;
       }
-      return sentence;
-    }).join('');
 
-    
-    // '만드는 방법' 주위에 줄바꿈 추가
-    content = content.replace(/만드는 방법/g, '<br><br><b>😁만드는 방법</b><br>');
+      document.getElementById('loading').classList.remove('hidden');
+      document.getElementById('generateButton').classList.add('hidden');
+
+      const formData = new FormData();
+      formData.append('image', imageInput.files[0]);
+
+      const jcookUrl = 'https://port-0-jcook-9zxht12blq81t0ot.sel4.cloudtype.app/generate'
+      fetch(jcookUrl, {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          const titleMatch = data.generatedText.match(/\*\*(.*?)\*\*/);
+          const title = titleMatch ? titleMatch[1] : '분석 결과';
+
+          // '**제목**' 제거 및 마침표 기준으로 줄바꿈 추가
+          let content = data.generatedText.replace(/\*\*.*?\*\*/g, '').trim();
+
+          // 숫자 다음의 마침표를 제외하고, 마침표 뒤에 줄바꿈 추가
+          content = content.split('.').map((sentence, index, array) => {
+            if (index < array.length - 1 && !sentence.match(/\d$/)) {
+              return sentence + '.<br>';
+            }
+            return sentence;
+          }).join('');
 
 
-    Swal.fire({
-      title: title,
-      html: content,
-      icon: 'info',
-      confirmButtonText: '닫기'
-    });
+          // '만드는 방법' 주위에 줄바꿈 추가
+          content = content.replace(/만드는 방법/g, '<br><br><b>😁만드는 방법</b><br>');
 
-    document.getElementById('loading').classList.add('hidden');
-    document.getElementById('generateButton').classList.remove('hidden');
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    Swal.fire({
-      title: '에러',
-      text: '분석 중 에러가 발생했습니다!',
-      icon: 'error',
-      confirmButtonText: '닫기'
-    });
-    document.getElementById('loading').classList.add('hidden');
-    document.getElementById('generateButton').classList.remove('hidden');
-  });
-}
+
+          Swal.fire({
+            title: title,
+            html: content,
+            icon: 'info',
+            confirmButtonText: '닫기'
+          });
+
+          document.getElementById('loading').classList.add('hidden');
+          document.getElementById('generateButton').classList.remove('hidden');
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          Swal.fire({
+            title: '에러',
+            text: '분석 중 에러가 발생했습니다!',
+            icon: 'error',
+            confirmButtonText: '닫기'
+          });
+          document.getElementById('loading').classList.add('hidden');
+          document.getElementById('generateButton').classList.remove('hidden');
+        });
+    }
 
   </script>
 </body>
+
 </html>
