@@ -5,13 +5,13 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Food Recipes</title>
+  <title>Image Generator App</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     body {
       padding: 20px;
-      background-image: url("/bg3.jpg");
+      background-image: url("bg3.jpg");
       background-position: center;
       background-size: cover;
       background-repeat: no-repeat;
@@ -66,10 +66,10 @@
 
 <body class="flex items-center justify-center h-screen bg-gray-100">
   <div class="text-center">
-    <h1 class="text-5xl font-bold mb-4">🍽️Food Recipes</h1>
+    <h1 class="text-5xl font-bold mb-4">👁️Chef's Eye👁️</h1>
 
 
-    <label for="imageInput" class="block mb-2 text-xl text-gray-900 dark:text-gray-400">🥘Upload a photo of your
+    <label for="imageInput" class="block mb-2 text-xl text-gray-900 dark:text-gray-400">🍽️Upload a photo of your
       food.</label>
     <div style="text-align: center;padding-left: 80px;">
       <input type="file" id="imageInput" accept="image/*" width="100px"
@@ -79,7 +79,7 @@
 
     <img id="imagePreview"
       src="https://res.cloudinary.com/djzf2mipa/image/upload/v1702770403/img/irene-kredenets-6unxGRCPg0U-unsplash-removebg-preview_mubgwe.png"
-      alt="Image preview" class=" mt-3 mx-auto" style="width: 400px; height: 400px; object-fit: cover;" />
+      alt="Image preview" class=" mt-3 mx-auto" style="width: 350px; height: 350px; object-fit: cover;" />
 
 
     <button id="generateButton" onclick="generateContent()"
